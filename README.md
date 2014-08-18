@@ -23,9 +23,9 @@ Now run gophertron:
 
 ### Running tests
 
-To test, cd into the gophertron/gophers directory, and run:
+To test the 'gophers' package, run the following:
 
-	go test .
+	go test github.com/laher/gophertron/gophers
 
 
 
