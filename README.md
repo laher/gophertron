@@ -3,16 +3,30 @@ gophertron
 
 This package is just the code for a short talk on Go's coverage testing & the [httptest](http://golang.org/pkg/net/http/httptest/) package. I'll probably keep adding features for future discussions.
 
-Gophertron is a JSON API for spawning, mutating, zapping & kapowing gophers.
+Gophertron is a JSON API for spawning, mutating, zapping & kapowing gophers. The app depends on [martini](http://martini.codegangsta.io/) and [mgo](http://labix.org/mgo), and assumes a local Mongodb installation for running the server (but not for testing).
 
-Pre-requisite: install Go. Now install & run gophertron:
+### Installation
+
+Pre-requisite: install Go. Make sure your GOPATH is set.
+
+Now install gophertron:
 
 	go get github.com/laher/gophertron
+
+### Running Gophertron
+
+Pre-requisite: install mongodb. 
+
+Now run gophertron:
+
 	gophertron
 
-To test, cd into the gophertron/gophers directory, and run `go test .`. 
+### Running tests
 
-Coverage isn't the be-all and end-all: there's a bug which has been intentionally left uncaptured by the tests, and won't be captured by coverage testing. See `Gopher.Kapow()`. 
+To test, cd into the gophertron/gophers directory, and run:
+
+	go test .
+
 
 
 httptest
@@ -44,6 +58,7 @@ Now you can either run ./cover.sh, or the following (for Windows you'll need to 
 
 You can also [visit gocover.io to see the coverage report](http://gocover.io/github.com/laher/gophertron/gophers) ![coverage status](http://gocover.io/_badge/github.com/laher/gophertron/gophers?)
 
+Finally, coverage isn't the be-all and end-all: there's a bug which has been intentionally left uncaptured by the tests, and won't be captured by coverage testing. See `Gopher.Kapow()` is a non-pointer method trying to modify the object. Pointers, yes. Sorry to alarm you, but it's good to get familiar with pointers in Go - not nearly as scary as it sounds. 
 
 Reading on Go coverage testing:
 
