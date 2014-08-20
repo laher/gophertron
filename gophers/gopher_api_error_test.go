@@ -37,7 +37,7 @@ func TestApiPostServerError(t *testing.T) {
 	if err != nil {
 		t.Fatalf("request error: %v", err)
 	}
-	req, resp, w := wrapRecorder(r)
+	req, resp, w := newRecorder(r)
 	gopherApi.Post(req, resp)
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("Wrong status code: %d", w.Code)
