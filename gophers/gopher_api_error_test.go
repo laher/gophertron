@@ -4,7 +4,6 @@ import(
 	"fmt"
 	"testing"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 )
 
@@ -32,13 +31,14 @@ func (g *gopherErrorDAO) Die(gopherId string) error {
 
 func TestApiPostServerError(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherErrorDAO{}}
-	w := httptest.NewRecorder()
-	r := strings.NewReader(`{ "name": "diane" }`)
-	req, err := http.NewRequest("POST", "/gophers", r)
+	rdr := strings.NewReader(`{ "name": "diane" }`)
+	r, err := http.NewRequest("POST", "/gophers", rdr)
+	r.Header.Add("Content-Type", "application/json")
 	if err != nil {
 		t.Fatalf("request error: %v", err)
 	}
-	gopherApi.Post(w, req)
+	req, resp, w := wrapRecorder(r)
+	gopherApi.Post(req, resp)
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("Wrong status code: %d", w.Code)
 	}

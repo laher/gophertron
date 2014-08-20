@@ -3,11 +3,11 @@ gophertron
 
 This package is just the code for a short talk on Go's coverage testing & the [httptest](http://golang.org/pkg/net/http/httptest/) package. I'll probably keep adding features for future discussions.
 
-Gophertron is a JSON API for spawning, mutating, zapping & kapowing gophers. The app depends on [martini](http://martini.codegangsta.io/) and [mgo](http://labix.org/mgo), and assumes a local Mongodb installation for running the server (but not for testing).
+Gophertron is a JSON API for spawning, mutating, zapping & kapowing gophers. The app depends on [go-restful](https://github.com/emicklei/go-restful) and [mgo](http://labix.org/mgo), and assumes a local Mongodb installation for running the server (but not for testing).
 
 ### Installation
 
-Pre-requisite: install Go. Make sure your GOPATH is set.
+*Pre-requisite: install Go. Make sure your GOPATH is set.*
 
 Now install gophertron:
 
@@ -15,11 +15,22 @@ Now install gophertron:
 
 ### Running Gophertron
 
-Pre-requisite: install mongodb. 
+*Pre-requisite: install mongodb.*
 
 Now run gophertron:
 
 	gophertron
+
+You'll be able to use the API at http://localhost:8000/gophers .
+*TODO: add flags to change port*
+ 
+#### Optional: Swagger UI
+
+Optionally, you can download Swagger-UI at the same level as gophertron (../swagger-ui/).
+
+	git clone https://github.com/wordnik/swagger-ui
+
+Now when you run gophertron, you can browse to http://localhost:8000/gophers
 
 ### Running tests
 
@@ -27,6 +38,7 @@ To test the 'gophers' package, run the following:
 
 	go test github.com/laher/gophertron/gophers
 
+(or go into the gophers folder and run `go test`)
 
 
 httptest
@@ -37,7 +49,7 @@ httptest is a small package providing 2 utilities for testing HTTP functionality
  * ResponseRecorder helps you test your http handlers. Sample code is in gophers/gopher_api_test.go. [httptest.ResponseRecorder](http://golang.org/pkg/net/http/httptest/#ResponseRecorder) implements the [http.ResponseWriter](http://golang.org/pkg/net/http/#ResponseWriter) interface, so that you can pass it to any http handler.
  * The second utility is an actual server. The system chooses a port itself, and supplies information for connecting. I haven't included examples here.
 
-Note that my use of ResponseRecorder is for Martini handlers rather than actual [http.HandlerFunc](http://golang.org/pkg/net/http/#HandlerFunc)s, but the idea is the same.
+Note that my use of ResponseRecorder is for go-restful handlers, rather than actual [http.HandlerFunc](http://golang.org/pkg/net/http/#HandlerFunc)s, but the idea is the same. It took a little extra persuasion to get go-restful to work with ResponseRecorder. See the newRecorder function inside gophers/gopher_api_test.go.
 
 Code Coverage
 -------------

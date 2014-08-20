@@ -3,10 +3,22 @@ package gophers
 import(
 	"labix.org/v2/mgo/bson"
 	"testing"
+	"github.com/emicklei/go-restful"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 )
+
+//newRecorder creates an httptest.NewRecorder, wraps this and an http.Request inside restful.Request and restful.Response respectively.
+func newRecorder(r *http.Request) (*restful.Request, *restful.Response, *httptest.ResponseRecorder) {
+	restful.DefaultResponseContentType(restful.MIME_JSON)
+	w := httptest.NewRecorder()
+	r.Header.Add("Accept", "application/json, text/plain, text/html")
+	request := restful.NewRequest(r)
+	response := restful.NewResponse(w)
+	return request, response, w
+}
+
 
 //gopherDummyDAO doesnt send errors.
 type gopherDummyDAO struct {
@@ -32,13 +44,14 @@ func (g *gopherDummyDAO) Die(gopherId string) error {
 
 func TestApiPost(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
-	w := httptest.NewRecorder()
-	r := strings.NewReader(`{ "name": "diane" }`)
-	req, err := http.NewRequest("POST", "/gophers", r)
+	rdr := strings.NewReader(`{ "name": "diane" }`)
+	r, err := http.NewRequest("POST", "/gophers", rdr)
+	r.Header.Add("Content-Type", "application/json")
 	if err != nil {
 		t.Fatalf("request error: %v", err)
 	}
-	gopherApi.Post(w, req)
+	req, resp, w := newRecorder(r)
+	gopherApi.Post(req, resp)
 	if w.Code != http.StatusOK {
 		t.Errorf("Wrong status code: %d", w.Code)
 	}
@@ -47,15 +60,13 @@ func TestApiPost(t *testing.T) {
 
 func TestApiPostBadRequest(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
-	w := httptest.NewRecorder()
-	r := strings.NewReader(`{ "name": "diane }`)
-	req, err := http.NewRequest("POST", "/gophers", r)
+	rdr := strings.NewReader(`{ "name": "diane }`)
+	r, err := http.NewRequest("POST", "/gophers", rdr)
 	if err != nil {
 		t.Fatalf("request error: %v", err)
 	}
-
-	gopherApi.Post(w, req)
-
+	req, resp, w := newRecorder(r)
+	gopherApi.Post(req, resp)
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("Wrong status code: %d", w.Code)
 	}
@@ -64,11 +75,15 @@ func TestApiPostBadRequest(t *testing.T) {
 
 func TestApiGet(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
-	w := httptest.NewRecorder()
-	params := make(map[string]string)
-	params["gopherId"] = bson.NewObjectId().Hex()
-	gopherApi.Get(w, params)
-
+	gopherId := bson.NewObjectId().Hex()
+	t.Logf("Gopher id %s", gopherId)
+	r, err := http.NewRequest("GET", "/gophers/"+gopherId, nil)
+	if err != nil {
+		t.Fatalf("request error: %v", err)
+	}
+	req, resp, w := newRecorder(r)
+	req.PathParameters()["gopherId"] = gopherId
+	gopherApi.GetGopher(req, resp)
 	if w.Code != http.StatusOK {
 		t.Errorf("Wrong status code: %d", w.Code)
 	}
@@ -77,8 +92,12 @@ func TestApiGet(t *testing.T) {
 
 func TestApiGetAll(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
-	w := httptest.NewRecorder()
-	gopherApi.GetAll(w)
+	r, err := http.NewRequest("GET", "/gophers/", nil)
+	if err != nil {
+		t.Fatalf("request error: %v", err)
+	}
+	req, resp, w := newRecorder(r)
+	gopherApi.GetAll(req, resp)
 	if w.Code != http.StatusOK {
 		t.Errorf("Wrong status code: %d", w.Code)
 	}
@@ -87,11 +106,14 @@ func TestApiGetAll(t *testing.T) {
 
 func TestApiDelete(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
-	w := httptest.NewRecorder()
-	params := make(map[string]string)
-	params["gopherId"] = bson.NewObjectId().Hex()
-	gopherApi.Delete(w, params)
-
+	gopherId := bson.NewObjectId().Hex()
+	r, err := http.NewRequest("DELETE", "/gophers/"+gopherId, nil)
+	if err != nil {
+		t.Fatalf("request error: %v", err)
+	}
+	req, resp, w := newRecorder(r)
+	req.PathParameters()["gopherId"] = gopherId
+	gopherApi.Delete(req, resp)
 	if w.Code != http.StatusNoContent {
 		t.Fatalf("Wrong status code: %d", w.Code)
 	}
@@ -100,10 +122,14 @@ func TestApiDelete(t *testing.T) {
 
 func TestApiKapow(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
-	w := httptest.NewRecorder()
-	params := make(map[string]string)
-	params["gopherId"] = bson.NewObjectId().Hex()
-	gopherApi.Kapow(w, params)
+	gopherId := bson.NewObjectId().Hex()
+	r, err := http.NewRequest("POST", "/gophers/"+gopherId+"/kapow", nil)
+	if err != nil {
+		t.Fatalf("request error: %v", err)
+	}
+	req, resp, w := newRecorder(r)
+	req.PathParameters()["gopherId"] = gopherId
+	gopherApi.Kapow(req, resp)
 	if w.Code != http.StatusOK {
 		t.Errorf("Wrong status code: %d", w.Code)
 	}
