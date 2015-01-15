@@ -56,7 +56,7 @@ Code Coverage
 
 For coverage testing, you'll need to install go's coverage tooling, part of the 'go.tools' repo:
 
-	go get code.google.com/p/go.tools/cmd/cover
+	go get golang.org/x/tools/cmd/cover
 
 (If you don't have it, the `go` tool will tell you where to get it as above).
 
