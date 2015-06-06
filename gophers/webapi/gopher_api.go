@@ -8,14 +8,14 @@ import (
 	"time"
 
 	"github.com/emicklei/go-restful"
-	"github.com/laher/gophertron/gophers/db"
 	"github.com/laher/gophertron/gophers/model"
+	"github.com/laher/gophertron/gophers/services"
 	"gopkg.in/mgo.v2"
 )
 
 // API for handling gopher-related requests
 type GopherApi struct {
-	Dao db.GopherDao
+	GopherService services.GopherService
 }
 
 func (g *GopherApi) Post(request *restful.Request, response *restful.Response) {
@@ -27,7 +27,7 @@ func (g *GopherApi) Post(request *restful.Request, response *restful.Response) {
 		//New: set Born to now
 		gopher.Born = time.Now()
 		gopher.Mutated = time.Now()
-		err = g.Dao.Spawn(gopher)
+		err = g.GopherService.Spawn(gopher)
 		if err != nil {
 			log.Printf("API returning server error: %+v", err)
 			http.Error(response.ResponseWriter, err.Error(), http.StatusInternalServerError)
@@ -45,7 +45,7 @@ func (g *GopherApi) Put(request *restful.Request, response *restful.Response) {
 		http.Error(response.ResponseWriter, err.Error(), http.StatusBadRequest)
 	} else {
 		gopher.Mutated = time.Now()
-		err = g.Dao.Update(gopher)
+		err = g.GopherService.Update(gopher)
 		if err != nil {
 			if err == mgo.ErrNotFound {
 				log.Printf("Gopher not found: %+v", gopher)
@@ -64,7 +64,7 @@ func (g *GopherApi) Put(request *restful.Request, response *restful.Response) {
 
 func (g *GopherApi) GetGopher(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
-	gopher, err := g.Dao.Get(gopherId)
+	gopher, err := g.GopherService.Get(gopherId)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(response.ResponseWriter, err.Error(), http.StatusNotFound)
@@ -82,7 +82,7 @@ func (g *GopherApi) GetGopher(request *restful.Request, response *restful.Respon
 
 func (g *GopherApi) Zap(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
-	gopher, err := g.Dao.Get(gopherId)
+	gopher, err := g.GopherService.Get(gopherId)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(response.ResponseWriter, err.Error(), http.StatusNotFound)
@@ -94,7 +94,7 @@ func (g *GopherApi) Zap(request *restful.Request, response *restful.Response) {
 		}
 	}
 	gopher.Zap()
-	err = g.Dao.Update(gopher)
+	err = g.GopherService.Update(gopher)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			log.Printf("Gopher not found: %+v", gopher)
@@ -113,7 +113,7 @@ func (g *GopherApi) Zap(request *restful.Request, response *restful.Response) {
 
 func (g *GopherApi) Kapow(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
-	gopher, err := g.Dao.Get(gopherId)
+	gopher, err := g.GopherService.Get(gopherId)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(response.ResponseWriter, err.Error(), http.StatusNotFound)
@@ -131,7 +131,7 @@ func (g *GopherApi) Kapow(request *restful.Request, response *restful.Response) 
 		return
 	}
 
-	err = g.Dao.Update(gopher)
+	err = g.GopherService.Update(gopher)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			log.Printf("Gopher not found: %+v", gopher)
@@ -149,7 +149,7 @@ func (g *GopherApi) Kapow(request *restful.Request, response *restful.Response) 
 }
 
 func (g *GopherApi) GetAll(request *restful.Request, response *restful.Response) {
-	gophers, err := g.Dao.GetAll()
+	gophers, err := g.GopherService.GetAll()
 	if err != nil {
 		log.Printf("Server error: %+v", err)
 		http.Error(response.ResponseWriter, err.Error(), http.StatusInternalServerError)
@@ -162,7 +162,7 @@ func (g *GopherApi) GetAll(request *restful.Request, response *restful.Response)
 
 func (g *GopherApi) Delete(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
-	err := g.Dao.Die(gopherId)
+	err := g.GopherService.Die(gopherId)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			http.Error(response.ResponseWriter, err.Error(), http.StatusNotFound)
