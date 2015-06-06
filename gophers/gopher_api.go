@@ -3,11 +3,12 @@ package gophers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emicklei/go-restful"
-	"labix.org/v2/mgo"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/emicklei/go-restful"
+	"gopkg.in/mgo.v2"
 )
 
 // API for handling gopher-related requests
@@ -76,7 +77,6 @@ func (g *GopherApi) GetGopher(request *restful.Request, response *restful.Respon
 		response.WriteEntity(gopher)
 	}
 }
-
 
 func (g *GopherApi) Zap(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")

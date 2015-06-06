@@ -1,12 +1,13 @@
 package gophers
 
-import(
-	"labix.org/v2/mgo/bson"
-	"testing"
-	"github.com/emicklei/go-restful"
+import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"testing"
+
+	"github.com/emicklei/go-restful"
+	"gopkg.in/mgo.v2/bson"
 )
 
 //newRecorder creates an httptest.NewRecorder, wraps this and an http.Request inside restful.Request and restful.Response respectively.
@@ -19,10 +20,10 @@ func newRecorder(r *http.Request) (*restful.Request, *restful.Response, *httptes
 	return request, response, w
 }
 
-
 //gopherDummyDAO doesnt send errors.
 type gopherDummyDAO struct {
 }
+
 func (g *gopherDummyDAO) Spawn(gopher *Gopher) error {
 	gopher.Id = bson.NewObjectId()
 	return nil
@@ -34,13 +35,11 @@ func (g *gopherDummyDAO) GetAll() ([]Gopher, error) {
 	return []Gopher{}, nil
 }
 func (g *gopherDummyDAO) Get(gopherId string) (*Gopher, error) {
-	return &Gopher{Id:bson.ObjectIdHex(gopherId), Name: "roger", Skillz: []string{"Fencing", "Badger"}}, nil
+	return &Gopher{Id: bson.ObjectIdHex(gopherId), Name: "roger", Skillz: []string{"Fencing", "Badger"}}, nil
 }
 func (g *gopherDummyDAO) Die(gopherId string) error {
 	return nil
 }
-
-
 
 func TestApiPost(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}

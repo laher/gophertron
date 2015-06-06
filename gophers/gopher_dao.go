@@ -1,9 +1,10 @@
 package gophers
 
 import (
-	"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
 	"log"
+
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -101,4 +102,3 @@ func GetMongoDb(serverName string, dbName string) (*mgo.Session, *mgo.Database, 
 	db := session.DB(dbName)
 	return session, db, err
 }
-

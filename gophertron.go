@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/laher/gophertron/gophers"
-	"github.com/emicklei/go-restful"
-	"github.com/emicklei/go-restful/swagger"
-	"labix.org/v2/mgo"
 	"log"
 	"net/http"
+
+	"github.com/emicklei/go-restful"
+	"github.com/emicklei/go-restful/swagger"
+	"github.com/laher/gophertron/gophers"
+	"gopkg.in/mgo.v2"
 )
 
 type Config struct {
@@ -18,6 +19,7 @@ type Config struct {
 func (config *Config) GetDb() (*mgo.Session, *mgo.Database, error) {
 	return gophers.GetMongoDb(config.DbServer, config.DbName)
 }
+
 /*
 type parami func(w http.ResponseWriter, params map[string]string)
 type paramo func(w http.ResponseWriter, params martini.Params)
@@ -29,7 +31,7 @@ func pw(i parami) paramo {
 */
 func main() {
 	log.Print("Starting gophertron")
-//TODO: flags for config
+	//TODO: flags for config
 	config := &Config{
 		DbName:      "gophertron",
 		DbServer:    "localhost",
@@ -62,7 +64,7 @@ func main() {
 		Doc("update a gopher").
 		Operation("updateGopher").
 		Param(ws.PathParameter("gopherId", "identifier of the gopher").DataType("string")).
-		Reads(gophers.Gopher{}). // from the request
+		Reads(gophers.Gopher{}).  // from the request
 		Writes(gophers.Gopher{})) // on the response
 
 	ws.Route(ws.POST("/{gopherId}/zap").To(gopherApi.Zap).
@@ -83,7 +85,7 @@ func main() {
 		// docs
 		Doc("create a gopher").
 		Operation("createGopher").
-		Reads(gophers.Gopher{}). // from the request
+		Reads(gophers.Gopher{}).  // from the request
 		Writes(gophers.Gopher{})) // on the response
 
 	ws.Route(ws.DELETE("/{gopherId}").To(gopherApi.Delete).
@@ -95,26 +97,25 @@ func main() {
 	wsContainer.Add(ws)
 	swConfig := swagger.Config{
 		WebServices:    wsContainer.RegisteredWebServices(), // you control what services are visible
-		WebServicesUrl: "http://localhost"+config.ServiceAddr,
+		WebServicesUrl: "http://localhost" + config.ServiceAddr,
 		ApiPath:        "/apidocs.json",
 		// Optionally, specifiy where the UI is located
 		SwaggerPath:     "/apidocs/",
 		SwaggerFilePath: "../swagger-ui/dist"} //download to here ...
 	swagger.RegisterSwaggerService(swConfig, wsContainer)
 
-
-/*	router := martini.Classic()
-	router.Get("/gophers", gopherApi.GetAll)
-	//new
-	router.Post("/gophers", gopherApi.Post)
-	router.Post("/gophers/:gopherId/zap", pw(gopherApi.Zap))
-	router.Post("/gophers/:gopherId/kapow", pw(gopherApi.Kapow))
-	//existing
-	router.Put("/gophers/", gopherApi.Put)
-	router.Get("/gophers/:gopherId", pw(gopherApi.Get))
-	router.Delete("/gophers/:gopherId", pw(gopherApi.Delete))
-	http.Handle("/", router)
-*/
+	/*	router := martini.Classic()
+		router.Get("/gophers", gopherApi.GetAll)
+		//new
+		router.Post("/gophers", gopherApi.Post)
+		router.Post("/gophers/:gopherId/zap", pw(gopherApi.Zap))
+		router.Post("/gophers/:gopherId/kapow", pw(gopherApi.Kapow))
+		//existing
+		router.Put("/gophers/", gopherApi.Put)
+		router.Get("/gophers/:gopherId", pw(gopherApi.Get))
+		router.Delete("/gophers/:gopherId", pw(gopherApi.Delete))
+		http.Handle("/", router)
+	*/
 	http.Handle("/", wsContainer)
 	log.Printf("Gophertron to listen on %s", config.ServiceAddr)
 	err := http.ListenAndServe(config.ServiceAddr, nil)

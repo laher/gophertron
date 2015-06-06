@@ -1,11 +1,11 @@
 package gophers
 
 import (
-	"time"
 	"fmt"
-	"labix.org/v2/mgo/bson"
-)
+	"time"
 
+	"gopkg.in/mgo.v2/bson"
+)
 
 type Gopher struct {
 	Id      bson.ObjectId `bson:"_id"`
