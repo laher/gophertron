@@ -1,4 +1,4 @@
-package gophers
+package webapi
 
 import (
 	"net/http"
@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/emicklei/go-restful"
+	"github.com/laher/gophertron/gophers/model"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -24,19 +25,21 @@ func newRecorder(r *http.Request) (*restful.Request, *restful.Response, *httptes
 type gopherDummyDAO struct {
 }
 
-func (g *gopherDummyDAO) Spawn(gopher *Gopher) error {
+func (g *gopherDummyDAO) Spawn(gopher *model.Gopher) error {
 	gopher.Id = bson.NewObjectId()
 	return nil
 }
-func (g *gopherDummyDAO) Update(gopher *Gopher) error {
+func (g *gopherDummyDAO) Update(gopher *model.Gopher) error {
 	return nil
 }
-func (g *gopherDummyDAO) GetAll() ([]Gopher, error) {
-	return []Gopher{}, nil
+func (g *gopherDummyDAO) GetAll() ([]model.Gopher, error) {
+	return []model.Gopher{}, nil
 }
-func (g *gopherDummyDAO) Get(gopherId string) (*Gopher, error) {
-	return &Gopher{Id: bson.ObjectIdHex(gopherId), Name: "roger", Skillz: []string{"Fencing", "Badger"}}, nil
+
+func (g *gopherDummyDAO) Get(gopherId string) (*model.Gopher, error) {
+	return &model.Gopher{Id: bson.ObjectIdHex(gopherId), Name: "roger", Skillz: []string{"Fencing", "Badger"}}, nil
 }
+
 func (g *gopherDummyDAO) Die(gopherId string) error {
 	return nil
 }

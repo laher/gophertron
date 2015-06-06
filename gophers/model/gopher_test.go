@@ -1,4 +1,4 @@
-package gophers
+package model
 
 import (
 	"testing"

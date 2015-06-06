@@ -1,7 +1,9 @@
-package gophers
+package db
 
 import (
 	"log"
+
+	"github.com/laher/gophertron/gophers/model"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -14,18 +16,18 @@ const (
 type MongoDbProvider func() (*mgo.Session, *mgo.Database, error)
 
 type GopherDao interface {
-	Spawn(gopher *Gopher) error
-	Update(gopher *Gopher) error
+	Spawn(gopher *model.Gopher) error
+	Update(gopher *model.Gopher) error
 	Die(id string) error
-	GetAll() ([]Gopher, error)
-	Get(id string) (*Gopher, error)
+	GetAll() ([]model.Gopher, error)
+	Get(id string) (*model.Gopher, error)
 }
 
 type GopherMongoDao struct {
 	GetDb MongoDbProvider
 }
 
-func (g *GopherMongoDao) Spawn(gopher *Gopher) error {
+func (g *GopherMongoDao) Spawn(gopher *model.Gopher) error {
 	session, db, err := g.GetDb()
 	if err != nil {
 		log.Printf("Get Session error: %+v", err)
@@ -40,7 +42,7 @@ func (g *GopherMongoDao) Spawn(gopher *Gopher) error {
 	return err
 }
 
-func (g *GopherMongoDao) Update(gopher *Gopher) error {
+func (g *GopherMongoDao) Update(gopher *model.Gopher) error {
 	session, db, err := g.GetDb()
 	if err != nil {
 		log.Printf("Get Session error: %+v", err)
@@ -52,26 +54,26 @@ func (g *GopherMongoDao) Update(gopher *Gopher) error {
 	return err
 }
 
-func (g *GopherMongoDao) GetAll() ([]Gopher, error) {
+func (g *GopherMongoDao) GetAll() ([]model.Gopher, error) {
 	session, db, err := g.GetDb()
 	if err != nil {
 		return nil, err
 	}
 	defer session.Close()
 	cb := db.C(CollectionGopher)
-	result := []Gopher{}
+	result := []model.Gopher{}
 	err = cb.Find(bson.M{}).All(&result)
 	return result, err
 }
 
-func (g *GopherMongoDao) Get(gopherId string) (*Gopher, error) {
+func (g *GopherMongoDao) Get(gopherId string) (*model.Gopher, error) {
 	session, db, err := g.GetDb()
 	if err != nil {
 		return nil, err
 	}
 	defer session.Close()
 	cb := db.C(CollectionGopher)
-	result := Gopher{}
+	result := model.Gopher{}
 	err = cb.FindId(bson.ObjectIdHex(gopherId)).One(&result)
 	if err != nil {
 		return nil, err

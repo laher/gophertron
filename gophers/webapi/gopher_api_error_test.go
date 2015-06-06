@@ -1,26 +1,28 @@
-package gophers
+package webapi
 
 import (
 	"fmt"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/laher/gophertron/gophers/model"
 )
 
 //gopherErrorDAO returns errors for any call
 type gopherErrorDAO struct {
 }
 
-func (g *gopherErrorDAO) Spawn(gopher *Gopher) error {
+func (g *gopherErrorDAO) Spawn(gopher *model.Gopher) error {
 	return fmt.Errorf("Invalid input")
 }
-func (g *gopherErrorDAO) Update(gopher *Gopher) error {
+func (g *gopherErrorDAO) Update(gopher *model.Gopher) error {
 	return fmt.Errorf("invalid gopher")
 }
-func (g *gopherErrorDAO) GetAll() ([]Gopher, error) {
+func (g *gopherErrorDAO) GetAll() ([]model.Gopher, error) {
 	return nil, fmt.Errorf("The gophers are revolting")
 }
-func (g *gopherErrorDAO) Get(gopherId string) (*Gopher, error) {
+func (g *gopherErrorDAO) Get(gopherId string) (*model.Gopher, error) {
 	return nil, fmt.Errorf("No gopher found")
 }
 

@@ -1,4 +1,4 @@
-package gophers
+package webapi
 
 import (
 	"encoding/json"
@@ -8,16 +8,18 @@ import (
 	"time"
 
 	"github.com/emicklei/go-restful"
+	"github.com/laher/gophertron/gophers/db"
+	"github.com/laher/gophertron/gophers/model"
 	"gopkg.in/mgo.v2"
 )
 
 // API for handling gopher-related requests
 type GopherApi struct {
-	Dao GopherDao
+	Dao db.GopherDao
 }
 
 func (g *GopherApi) Post(request *restful.Request, response *restful.Response) {
-	gopher := new(Gopher)
+	gopher := new(model.Gopher)
 	err := request.ReadEntity(gopher)
 	if err != nil {
 		http.Error(response.ResponseWriter, err.Error(), http.StatusBadRequest)
@@ -37,7 +39,7 @@ func (g *GopherApi) Post(request *restful.Request, response *restful.Response) {
 }
 
 func (g *GopherApi) Put(request *restful.Request, response *restful.Response) {
-	gopher := new(Gopher)
+	gopher := new(model.Gopher)
 	err := request.ReadEntity(gopher)
 	if err != nil {
 		http.Error(response.ResponseWriter, err.Error(), http.StatusBadRequest)
