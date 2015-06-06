@@ -1,16 +1,16 @@
 package gophers
 
-import(
+import (
 	"fmt"
-	"testing"
 	"net/http"
 	"strings"
+	"testing"
 )
-
 
 //gopherErrorDAO returns errors for any call
 type gopherErrorDAO struct {
 }
+
 func (g *gopherErrorDAO) Spawn(gopher *Gopher) error {
 	return fmt.Errorf("Invalid input")
 }
@@ -27,7 +27,6 @@ func (g *gopherErrorDAO) Get(gopherId string) (*Gopher, error) {
 func (g *gopherErrorDAO) Die(gopherId string) error {
 	return fmt.Errorf("Gopher already dead")
 }
-
 
 func TestApiPostServerError(t *testing.T) {
 	gopherApi := &GopherApi{Dao: &gopherErrorDAO{}}
