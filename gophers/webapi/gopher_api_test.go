@@ -8,6 +8,7 @@ import (
 
 	"github.com/emicklei/go-restful"
 	"github.com/laher/gophertron/gophers/model"
+	"github.com/laher/gophertron/gophers/services"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -45,7 +46,8 @@ func (g *gopherDummyDAO) Die(gopherId string) error {
 }
 
 func TestApiPost(t *testing.T) {
-	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
+
+	gopherApi := &GopherApi{GopherService: services.GopherService{Dao: &gopherDummyDAO{}}}
 	rdr := strings.NewReader(`{ "name": "diane" }`)
 	r, err := http.NewRequest("POST", "/gophers", rdr)
 	r.Header.Add("Content-Type", "application/json")
@@ -61,7 +63,7 @@ func TestApiPost(t *testing.T) {
 }
 
 func TestApiPostBadRequest(t *testing.T) {
-	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
+	gopherApi := &GopherApi{GopherService: services.GopherService{Dao: &gopherDummyDAO{}}}
 	rdr := strings.NewReader(`{ "name": "diane }`)
 	r, err := http.NewRequest("POST", "/gophers", rdr)
 	if err != nil {
@@ -76,7 +78,7 @@ func TestApiPostBadRequest(t *testing.T) {
 }
 
 func TestApiGet(t *testing.T) {
-	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
+	gopherApi := &GopherApi{GopherService: services.GopherService{Dao: &gopherDummyDAO{}}}
 	gopherId := bson.NewObjectId().Hex()
 	t.Logf("Gopher id %s", gopherId)
 	r, err := http.NewRequest("GET", "/gophers/"+gopherId, nil)
@@ -93,7 +95,7 @@ func TestApiGet(t *testing.T) {
 }
 
 func TestApiGetAll(t *testing.T) {
-	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
+	gopherApi := &GopherApi{GopherService: services.GopherService{Dao: &gopherDummyDAO{}}}
 	r, err := http.NewRequest("GET", "/gophers/", nil)
 	if err != nil {
 		t.Fatalf("request error: %v", err)
@@ -107,7 +109,7 @@ func TestApiGetAll(t *testing.T) {
 }
 
 func TestApiDelete(t *testing.T) {
-	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
+	gopherApi := &GopherApi{GopherService: services.GopherService{Dao: &gopherDummyDAO{}}}
 	gopherId := bson.NewObjectId().Hex()
 	r, err := http.NewRequest("DELETE", "/gophers/"+gopherId, nil)
 	if err != nil {
@@ -123,7 +125,7 @@ func TestApiDelete(t *testing.T) {
 }
 
 func TestApiKapow(t *testing.T) {
-	gopherApi := &GopherApi{Dao: &gopherDummyDAO{}}
+	gopherApi := &GopherApi{GopherService: services.GopherService{Dao: &gopherDummyDAO{}}}
 	gopherId := bson.NewObjectId().Hex()
 	r, err := http.NewRequest("POST", "/gophers/"+gopherId+"/kapow", nil)
 	if err != nil {

@@ -27,7 +27,7 @@ type GopherMongoDao struct {
 	GetDb MongoDbProvider
 }
 
-func (g *GopherMongoDao) Spawn(gopher *model.Gopher) error {
+func (g GopherMongoDao) Spawn(gopher *model.Gopher) error {
 	session, db, err := g.GetDb()
 	if err != nil {
 		log.Printf("Get Session error: %+v", err)
@@ -42,7 +42,7 @@ func (g *GopherMongoDao) Spawn(gopher *model.Gopher) error {
 	return err
 }
 
-func (g *GopherMongoDao) Update(gopher *model.Gopher) error {
+func (g GopherMongoDao) Update(gopher *model.Gopher) error {
 	session, db, err := g.GetDb()
 	if err != nil {
 		log.Printf("Get Session error: %+v", err)
@@ -54,7 +54,7 @@ func (g *GopherMongoDao) Update(gopher *model.Gopher) error {
 	return err
 }
 
-func (g *GopherMongoDao) GetAll() ([]model.Gopher, error) {
+func (g GopherMongoDao) GetAll() ([]model.Gopher, error) {
 	session, db, err := g.GetDb()
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func (g *GopherMongoDao) GetAll() ([]model.Gopher, error) {
 	return result, err
 }
 
-func (g *GopherMongoDao) Get(gopherId string) (*model.Gopher, error) {
+func (g GopherMongoDao) Get(gopherId string) (*model.Gopher, error) {
 	session, db, err := g.GetDb()
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (g *GopherMongoDao) Get(gopherId string) (*model.Gopher, error) {
 	return &result, err
 }
 
-func (g *GopherMongoDao) Die(gopherId string) error {
+func (g GopherMongoDao) Die(gopherId string) error {
 	session, db, err := g.GetDb()
 	if err != nil {
 		return err

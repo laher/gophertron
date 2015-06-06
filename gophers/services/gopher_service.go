@@ -22,7 +22,7 @@ func (g GopherService) GetAll() ([]model.Gopher, error) {
 }
 
 func (g GopherService) Get(gopherId string) (*model.Gopher, error) {
-	return g.Dao.Spawn(gopherId)
+	return g.Dao.Get(gopherId)
 }
 
 func (g GopherService) Die(gopherId string) error {

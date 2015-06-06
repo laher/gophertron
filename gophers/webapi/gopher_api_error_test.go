@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/laher/gophertron/gophers/model"
+	"github.com/laher/gophertron/gophers/services"
 )
 
 //gopherErrorDAO returns errors for any call
@@ -31,7 +32,7 @@ func (g *gopherErrorDAO) Die(gopherId string) error {
 }
 
 func TestApiPostServerError(t *testing.T) {
-	gopherApi := &GopherApi{Dao: &gopherErrorDAO{}}
+	gopherApi := &GopherApi{GopherService: services.GopherService{Dao: &gopherErrorDAO{}}}
 	rdr := strings.NewReader(`{ "name": "diane" }`)
 	r, err := http.NewRequest("POST", "/gophers", rdr)
 	r.Header.Add("Content-Type", "application/json")

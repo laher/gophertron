@@ -18,7 +18,7 @@ type GopherApi struct {
 	GopherService services.GopherService
 }
 
-func (g *GopherApi) Post(request *restful.Request, response *restful.Response) {
+func (g GopherApi) Post(request *restful.Request, response *restful.Response) {
 	gopher := new(model.Gopher)
 	err := request.ReadEntity(gopher)
 	if err != nil {
@@ -38,7 +38,7 @@ func (g *GopherApi) Post(request *restful.Request, response *restful.Response) {
 	}
 }
 
-func (g *GopherApi) Put(request *restful.Request, response *restful.Response) {
+func (g GopherApi) Put(request *restful.Request, response *restful.Response) {
 	gopher := new(model.Gopher)
 	err := request.ReadEntity(gopher)
 	if err != nil {
@@ -62,7 +62,7 @@ func (g *GopherApi) Put(request *restful.Request, response *restful.Response) {
 	}
 }
 
-func (g *GopherApi) GetGopher(request *restful.Request, response *restful.Response) {
+func (g GopherApi) GetGopher(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
 	gopher, err := g.GopherService.Get(gopherId)
 	if err != nil {
@@ -80,7 +80,7 @@ func (g *GopherApi) GetGopher(request *restful.Request, response *restful.Respon
 	}
 }
 
-func (g *GopherApi) Zap(request *restful.Request, response *restful.Response) {
+func (g GopherApi) Zap(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
 	gopher, err := g.GopherService.Get(gopherId)
 	if err != nil {
@@ -111,7 +111,7 @@ func (g *GopherApi) Zap(request *restful.Request, response *restful.Response) {
 	response.WriteEntity(gopher)
 }
 
-func (g *GopherApi) Kapow(request *restful.Request, response *restful.Response) {
+func (g GopherApi) Kapow(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
 	gopher, err := g.GopherService.Get(gopherId)
 	if err != nil {
@@ -148,7 +148,7 @@ func (g *GopherApi) Kapow(request *restful.Request, response *restful.Response) 
 	response.WriteEntity(gopher)
 }
 
-func (g *GopherApi) GetAll(request *restful.Request, response *restful.Response) {
+func (g GopherApi) GetAll(request *restful.Request, response *restful.Response) {
 	gophers, err := g.GopherService.GetAll()
 	if err != nil {
 		log.Printf("Server error: %+v", err)
@@ -160,7 +160,7 @@ func (g *GopherApi) GetAll(request *restful.Request, response *restful.Response)
 	response.WriteEntity(gophers)
 }
 
-func (g *GopherApi) Delete(request *restful.Request, response *restful.Response) {
+func (g GopherApi) Delete(request *restful.Request, response *restful.Response) {
 	gopherId := request.PathParameter("gopherId")
 	err := g.GopherService.Die(gopherId)
 	if err != nil {
