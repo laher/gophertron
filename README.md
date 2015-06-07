@@ -1,7 +1,11 @@
 gophertron
 ==========
 
-This package is just the code for a short talk on Go's coverage testing & the [httptest](http://golang.org/pkg/net/http/httptest/) package. I'll probably keep adding features for future discussions.
+This package is just a vehicle for some Go talks I’ve given.
+
+ * The first (see tag v0.1 for the original code) was a short talk on Go's coverage testing & the [httptest](http://golang.org/pkg/net/http/httptest/) package.
+ * The second talk (v0.2) will discuss some techniques for readying an app for production.
+ * I'll probably keep adding features for future discussions.
 
 Gophertron is a JSON API for spawning, mutating, zapping & kapowing gophers. The app depends on [go-restful](https://github.com/emicklei/go-restful) and [mgo](http://labix.org/mgo), and assumes a local Mongodb installation for running the server (but not for testing).
 
@@ -40,6 +44,16 @@ To test the 'gophers' package, run the following:
 
 (or go into the gophers folder and run `go test`)
 
+
+Going into production talk (June 2015)
+--------------------------
+
+See slides at https://github.com/laher/going-into-production
+
+Testing talk (August 2014)
+--------------------------
+
+There’s no slides for the testing talk. Please see below for supplementary info.
 
 httptest
 --------
