@@ -1,7 +1,6 @@
 package wiring
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/emicklei/go-restful"
@@ -11,7 +10,7 @@ import (
 	"github.com/laher/gophertron/gophers/webapi"
 )
 
-func routing(gopherApi webapi.GopherApi, config *gophers.Config) {
+func routing(gopherApi webapi.GopherApi, config *gophers.Config) http.Handler {
 	wsContainer := restful.NewContainer()
 	ws := new(restful.WebService)
 	ws.Path("/gophers").
@@ -75,10 +74,5 @@ func routing(gopherApi webapi.GopherApi, config *gophers.Config) {
 		SwaggerFilePath: "../swagger-ui/dist"} //download to here ...
 	swagger.RegisterSwaggerService(swConfig, wsContainer)
 
-	http.Handle("/", wsContainer)
-	log.Printf("Gophertron to listen on %s", config.ServiceAddr)
-	err := http.ListenAndServe(config.ServiceAddr, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+	return wsContainer
 }

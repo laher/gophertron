@@ -2,8 +2,11 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/laher/gophertron/gophers"
+	"github.com/laher/gophertron/gophers/middleware"
+	"github.com/laher/gophertron/gophers/services"
 	"github.com/laher/gophertron/gophers/wiring"
 )
 
@@ -15,5 +18,15 @@ func main() {
 		DbServer:    "localhost",
 		ServiceAddr: ":8001",
 	}
-	wiring.Wiring(config)
+	wsContainer := wiring.Wiring(config)
+	authService := services.DummyAuthService{}
+	mw := middleware.MainMiddleware(authService, config)
+	mw.UseHandler(wsContainer)
+	http.Handle("/", mw)
+	log.Printf("Gophertron to listen on %s", config.ServiceAddr)
+	err := http.ListenAndServe(config.ServiceAddr, nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
+
 }
